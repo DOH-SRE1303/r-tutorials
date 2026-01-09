@@ -8,3 +8,6 @@
 .Rproj.user
 .Ruserdata
 *_cache/
+
+# ignore log file
+.log
