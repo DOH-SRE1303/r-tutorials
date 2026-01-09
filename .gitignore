@@ -10,4 +10,4 @@
 *_cache/
 
 # ignore log file
-.log
+*.log
