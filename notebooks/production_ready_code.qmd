@@ -405,7 +405,7 @@ for(i in 1:nrow(patient_data_DT)) {
 
 ```
 
-### Memory Efficiency with data.table 
+### Memory Efficiency with data.table
 
 data.table also offers improved memory efficiency as operations often work in-place, rather than duplicating the table.
 
@@ -414,4 +414,9 @@ data.table also offers improved memory efficiency as operations often work in-pl
 # in-place modification minimizes redundant memory usage
 patient_data_DT[, test_result_cleaning := str_to_lower(test_result)]
 
+```
+
+```{r}
+# when done, close the log to prevent additional info from being written to the log
+log_close()
 ```

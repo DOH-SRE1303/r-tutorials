@@ -75,7 +75,7 @@ log_print("=== Log File Started ===")
 log_print(paste("Log file start time:", now()))
 ```
 
-    Log file start time: 2026-01-12 14:40:22.327756 
+    Log file start time: 2026-01-12 16:11:53.227297 
 
 ``` r
 # when done, close the log
@@ -325,8 +325,8 @@ microbenchmark::microbenchmark(read.csv(patient_filepath))
 ```
 
     Unit: milliseconds
-                           expr     min       lq     mean  median      uq     max
-     read.csv(patient_filepath) 11.1668 12.73925 13.74154 13.5393 14.3049 21.9438
+                           expr     min       lq     mean   median       uq     max
+     read.csv(patient_filepath) 10.9279 11.97145 13.06694 12.66015 13.95225 19.0958
      neval
        100
 
@@ -336,10 +336,10 @@ microbenchmark::microbenchmark(readr::read_csv(patient_filepath, show_col_types 
 ```
 
     Unit: milliseconds
-                                                          expr     min       lq
-     readr::read_csv(patient_filepath, show_col_types = FALSE) 19.0509 20.74925
-         mean   median       uq     max neval
-     21.84918 21.34165 22.48755 32.1133   100
+                                                          expr     min     lq
+     readr::read_csv(patient_filepath, show_col_types = FALSE) 17.5788 18.515
+         mean  median       uq     max neval
+     19.80068 19.2421 20.43045 27.3956   100
 
 ``` r
 # data.table fread
@@ -349,8 +349,8 @@ microbenchmark::microbenchmark(data.table::fread(patient_filepath, verbose = FAL
     Unit: milliseconds
                                                                            expr
      data.table::fread(patient_filepath, verbose = FALSE, showProgress = FALSE)
-        min      lq     mean  median     uq     max neval
-     4.8742 5.65635 6.678977 6.47785 7.3644 16.3999   100
+        min      lq     mean  median      uq    max neval
+     4.7746 5.13145 5.724572 5.38845 6.14045 8.5663   100
 
 #### Comparing function performance
 
@@ -412,19 +412,19 @@ microbenchmark::microbenchmark(inefficient_patient_analysis(patient_data_DT))
 
     Unit: milliseconds
                                               expr     min       lq     mean
-     inefficient_patient_analysis(patient_data_DT) 55.2912 59.95065 66.56086
+     inefficient_patient_analysis(patient_data_DT) 51.8549 57.02525 64.01921
        median      uq      max neval
-     62.65715 65.6684 179.5173   100
+     59.72535 62.6196 208.4091   100
 
 ``` r
 microbenchmark::microbenchmark(efficient_patient_analysis(patient_data_DT))
 ```
 
     Unit: milliseconds
-                                            expr    min      lq     mean median
-     efficient_patient_analysis(patient_data_DT) 2.2934 2.58835 3.217017 3.0125
-          uq    max neval
-     3.54675 5.4965   100
+                                            expr    min     lq     mean median
+     efficient_patient_analysis(patient_data_DT) 2.5117 2.8986 3.783659 3.1574
+          uq     max neval
+     3.39045 48.8243   100
 
 ## Parallelization
 
@@ -573,7 +573,7 @@ print(time_seq)
 ```
 
        user  system elapsed 
-       0.13    0.02    0.13 
+       0.13    0.00    0.12 
 
 ``` r
 print('Parallel:')
@@ -586,7 +586,7 @@ print(time_par)
 ```
 
        user  system elapsed 
-       0.01    0.01    0.05 
+       0.00    0.00    0.05 
 
 ``` r
 cat("\n=== Risk Assessment by Condition ===\n")
@@ -610,11 +610,11 @@ print(results_df)
 
            condition mean_risk  ci_lower  ci_upper n_patients
               <char>     <num>     <num>     <num>      <int>
-    1:      Diabetes 0.5931579 0.4773382 0.6978384        702
-    2:        Asthma 0.6660000 0.5347417 0.7852917        768
-    3:  Hypertension 0.6935714 0.5723333 0.7962236        689
-    4: Heart Disease 0.9030000 0.8243353 0.9838243        711
-    5:          COPD 0.9600000 0.8683669 1.0786214        744
+    1:      Diabetes 0.5931579 0.4852477 0.6913667        702
+    2:        Asthma 0.6660000 0.5466667 0.7966667        768
+    3:  Hypertension 0.6935714 0.5843437 0.8073125        689
+    4: Heart Disease 0.9030000 0.8222500 0.9883700        711
+    5:          COPD 0.9600000 0.8661250 1.0666882        744
 
 ## Memory Management
 
@@ -635,8 +635,8 @@ gc()
 ```
 
               used  (Mb) gc trigger  (Mb) max used  (Mb)
-    Ncells 2252993 120.4    4139064 221.1  3406291 182.0
-    Vcells 4215176  32.2   10146329  77.5 10146326  77.5
+    Ncells 2253028 120.4    4139204 221.1  3406324 182.0
+    Vcells 4215283  32.2   10146329  77.5 10146328  77.5
 
 ### Vector Pre-allocation
 
@@ -667,4 +667,9 @@ work in-place, rather than duplicating the table.
 ``` r
 # in-place modification minimizes redundant memory usage
 patient_data_DT[, test_result_cleaning := str_to_lower(test_result)]
+```
+
+``` r
+# when done, close the log to prevent additional info from being written to the log
+log_close()
 ```
