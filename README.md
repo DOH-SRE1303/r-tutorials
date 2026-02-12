@@ -18,6 +18,8 @@ The notebooks (found in the notebooks folder) are:
 - [Statistical Inference via Data Science: A ModernDive into R and the Tidyverse](https://moderndive.com/index.html): examples of getting started in R, data visualization, wrangling, statistics
 - [R for Data Science](https://r4ds.had.co.nz/): R textbook for data science workflows and learning tidyverse conventions
 - [Advanced R](https://adv-r.hadley.nz/index.html): R textbook for more advanced R concepts
+- [swirl](https://github.com/swirldev/swirl_courses?tab=readme-ov-file#swirl-courses): interactive R courses
+- [Applied Epi Tutorials](https://www.appliedepi.org/resources/tutorials.html): Introductory R courses for Epis. You will need to make a free account before you can access the tutorials.
 
 ## Data Visualization Resources
 - [The R Graph Gallery](https://r-graph-gallery.com/): a collection of many different types of charts made with R, with a focus on using tidyverse and ggplot2, good for inspiration and showing the different possibilities of creating visualizations with R. Also shows the various [theme options](https://r-graph-gallery.com/192-ggplot-themes.html) when using ggplot2.
