@@ -108,7 +108,7 @@ hyper_9918 <- demo |>
   left_join(bpq |> select(SEQN, BPQ020, BPQ050A, BPQ100D), join_by(SEQN)) |> 
   left_join(bpx |>  select(SEQN, starts_with("BPXSY"), starts_with("BPXDI")), join_by(SEQN))
 
-print(head(hyper_9918))
+print(head(hyper_9918[,1:10]))
 ```
 
 #### Create Analysis Variables
