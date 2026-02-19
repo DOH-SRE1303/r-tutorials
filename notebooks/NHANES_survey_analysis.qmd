@@ -16,7 +16,11 @@ prefer-html: true
 
 This notebook (mostly) replicates analysis shown in the NCHS Data Brief is here: <https://www.cdc.gov/nchs/data/databriefs/db364-h.pdf>. SUDAAN code provided by CDC for running a similar analysis of the NHANES data is available here: wwwn.cdc.gov/nchs/data/Tutorials/Code/DB364_SUDAAN.sas.
 
-More resources on Survey Data Analysis with R: Survey Data Analysis with R: <https://stats.oarc.ucla.edu/r/seminars/survey-data-analysis-with-r/>
+## Additional Resources
+
+-   Survey Data Analysis with R: <https://stats.oarc.ucla.edu/r/seminars/survey-data-analysis-with-r/>
+
+-   [samplyr](https://github.com/dickoa/samplyr): a tidy grammar for survey sampling
 
 ```{r}
 # Load required packages

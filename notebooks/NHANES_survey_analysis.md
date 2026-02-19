@@ -4,6 +4,7 @@ Allie Warren, allison.warren
 
 - [Survey Analysis and Converting From SUDAAN to
   R](#survey-analysis-and-converting-from-sudaan-to-r)
+  - [Additional Resources](#additional-resources)
   - [Hypertension Prevalence Among Adults Aged 18 and Over: United
     States,
     2017–2018](#hypertension-prevalence-among-adults-aged-18-and-over-united-states-20172018)
@@ -27,8 +28,13 @@ code provided by CDC for running a similar analysis of the NHANES data
 is available here:
 wwwn.cdc.gov/nchs/data/Tutorials/Code/DB364_SUDAAN.sas.
 
-More resources on Survey Data Analysis with R: Survey Data Analysis with
-R: <https://stats.oarc.ucla.edu/r/seminars/survey-data-analysis-with-r/>
+## Additional Resources
+
+- Survey Data Analysis with R:
+  <https://stats.oarc.ucla.edu/r/seminars/survey-data-analysis-with-r/>
+
+- [samplyr](https://github.com/dickoa/samplyr): a tidy grammar for
+  survey sampling
 
 ``` r
 # Load required packages
@@ -436,7 +442,7 @@ cat("Analysis population:", sum(hyper_1718$sel1 == 1, na.rm = TRUE), "\n\n")
 # PSUs nested within strata accounts for the design effects
 nhanes_9918_design <- svydesign(
   id = ~SDMVPSU, # Primary Sampling Unit (PSU) identifier - geographic areas
-  strata = ~SDMVSTRA, # stratafication variable - used to ensure geographic and demoraphic representation
+  strata = ~SDMVSTRA, # stratfication variable - used to ensure geographic and demoraphic representation
   weights = ~WTMEC2YR, # survey sample weights, accounts for the unequal probability of sampling and non-response - this weight is used for analyzing a single 2 year cycle
   nest = TRUE, # indicates that PSUs are nested w/in strata, not across the netire dataset
   data = hyper_9918
