@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+    <idinfo>
+        <citation>
+            <citeinfo>
+                <origin/>
+                <pubdate>20251223</pubdate>
+                <title>WashingtonStatePublicSchools</title>
+                <geoform>vector digital data</geoform>
+            </citeinfo>
+        </citation>
+        <descript>
+            <abstract>School data points derived from address data provided by schools under the purview of the Office of Superintendent of Public Instruction (OSPI) to Data Management division at OSPI.The addresses were submitted to the Washington Master Address Service (WAMAS) to standardize the address formats and provide the Latitude and Longitude coordinates from the geocoding process. The address data was combined into a single address line along with the geocoded Latitude and Longitude data to enable creation of the school points based on those coordinates for each address submitted. The points were reviewed by overlaying the data points on the National Agriculture Imagery Program (NAIP) imagery provided in the ArcGIS Pro desktop software and moved to the building centroids where possible.The data points from the geo-coding process initially established the location for the school.The combined address was then populated into the PhysicalAddress field.</abstract>
+            <purpose>These data sets provide the location of school points based on the address provided to Office of Superintendent of Public Instruction (OSPI) for use in mapping platforms.</purpose>
+        </descript>
+        <timeperd>
+            <timeinfo>
+                <sngdate>
+                    <caldate>20251223</caldate>
+                </sngdate>
+            </timeinfo>
+            <current>State Plane South 83 HARN</current>
+        </timeperd>
+        <status>
+            <progress>In work</progress>
+            <update>As needed</update>
+        </status>
+        <spdom>
+            <bounding>
+                <westbc>-124.720677</westbc>
+                <eastbc>-116.872368</eastbc>
+                <northbc>49.020706</northbc>
+                <southbc>45.507402</southbc>
+            </bounding>
+        </spdom>
+        <keywords>
+            <theme>
+                <themekt>ISO 19115 Topic Categories</themekt>
+                <themekey>location</themekey>
+            </theme>
+            <theme>
+                <themekt>None</themekt>
+                <themekey>Schools</themekey>
+                <themekey>Public Schools</themekey>
+                <themekey>OSPI</themekey>
+                <themekey>Office of Superintendent of Public Instruction</themekey>
+                <themekey>Washington State</themekey>
+                <themekey>Education</themekey>
+            </theme>
+        </keywords>
+        <accconst>None</accconst>
+        <useconst>None</useconst>
+        <native>Esri ArcGIS 13.5.5.57366</native>
+    </idinfo>
+    <spdoinfo>
+        <direct>Vector</direct>
+        <ptvctinf>
+            <sdtsterm>
+                <sdtstype>Entity point</sdtstype>
+                <ptvctcnt>2498</ptvctcnt>
+            </sdtsterm>
+        </ptvctinf>
+    </spdoinfo>
+    <eainfo>
+        <detailed>
+            <enttyp>
+                <enttypl>WashingtonStatePublicSchools</enttypl>
+                <enttypd>A summary of the information contained within the data set.</enttypd>
+                <enttypds>A reference to one or more detailed sources of information on the content of the data set; for example, a digital or hardcopy data dictionary. (See FGDC Standard for data dictionary format information.) The user may attach or link to a detailed data dictionary.</enttypds>
+            </enttyp>
+            <attr>
+                <attrlabl>OBJECTID</attrlabl>
+                <attrdef>Internal feature number.</attrdef>
+                <attrdefs>Esri</attrdefs>
+                <attrdomv>
+                                        
+                    <udom>Sequential unique whole numbers that are automatically generated.</udom>
+                                    
+                </attrdomv>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>Shape</attrlabl>
+                <attrdef>Feature geometry.</attrdef>
+                <attrdefs>Esri</attrdefs>
+                <attrdomv>
+                                        
+                    <udom>Coordinates defining the features.</udom>
+                                    
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>SchoolCode</attrlabl>
+                <attrdef>Unique school code assigned by OSPI (EDS)</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>School</attrlabl>
+                <attrdef>Name of school as it recorded in the Schools Directory (EDS)</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>PhysicalAddress</attrlabl>
+                <attrdef>Physical Address of school (EDS)</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>ESDCode</attrlabl>
+                <attrdef>Educational Service District unique code (EDS)</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <attrdomv>
+                                        
+                    <edom>
+                                                
+                        <edomv>32801</edomv>
+                                                
+                        <edomvd>Educational Service District 101</edomvd>
+                                                
+                        <edomvds>EDS</edomvds>
+                                            
+                    </edom>
+                                    
+                </attrdomv>
+                <attrdomv>
+                                        
+                    <edom>
+                                                
+                        <edomv>39801</edomv>
+                                                
+                        <edomvd>Educational Service District 105</edomvd>
+                                                
+                        <edomvds>EDS</edomvds>
+                                            
+                    </edom>
+                                    
+                </attrdomv>
+                <attrdomv>
+                                        
+                    <edom>
+                                                
+                        <edomv>6801</edomv>
+                                                
+                        <edomvd>Educational Service District 112</edomvd>
+                                                
+                        <edomvds>EDS</edomvds>
+                                            
+                    </edom>
+                                    
+                </attrdomv>
+                <attrdomv>
+                                        
+                    <edom>
+                                                
+                        <edomv>34801</edomv>
+                                                
+                        <edomvd>Capital Region ESD 113</edomvd>
+                                                
+                        <edomvds>EDS</edomvds>
+                                            
+                    </edom>
+                                    
+                </attrdomv>
+                <attrdomv>
+                                        
+                    <edom>
+                                                
+                        <edomv>18801</edomv>
+                                                
+                        <edomvd>Olympic Educational Service District 114</edomvd>
+                                                
+                        <edomvds>EDS</edomvds>
+                                            
+                    </edom>
+                                    
+                </attrdomv>
+                <attrdomv>
+                                        
+                    <edom>
+                                                
+                        <edomv>17801</edomv>
+                                                
+                        <edomvd>Puget Sound Educational Service District 121</edomvd>
+                                                
+                        <edomvds>EDS</edomvds>
+                                            
+                    </edom>
+                                    
+                </attrdomv>
+                <attrdomv>
+                                        
+                    <edom>
+                                                
+                        <edomv>11801</edomv>
+                                                
+                        <edomvd>Educational Service District 123</edomvd>
+                                                
+                        <edomvds>EDS</edomvds>
+                                            
+                    </edom>
+                                    
+                </attrdomv>
+                <attrdomv>
+                                        
+                    <edom>
+                                                
+                        <edomv>4801</edomv>
+                                                
+                        <edomvd>North Central Educational Service District 171</edomvd>
+                                                
+                        <edomvds>EDS</edomvds>
+                                            
+                    </edom>
+                                    
+                </attrdomv>
+                <attrdomv>
+                                        
+                    <edom>
+                                                
+                        <edomv>29801</edomv>
+                                                
+                        <edomvd>Northwest Educational Service District 189</edomvd>
+                                                
+                        <edomvds>EDS</edomvds>
+                                            
+                    </edom>
+                                    
+                </attrdomv>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>ESDName</attrlabl>
+                <attrdef>Educational Service District name (EDS)</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>LEACode</attrlabl>
+                <attrdef>Local Educational Authority/District unique code (EDS)</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>LEAName</attrlabl>
+                <attrdef>Local Educational Authority/District name (EDS)</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>SchoolCategory</attrlabl>
+                <attrdef>School Category Code (EDS)</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>AYPCode</attrlabl>
+                <attrdef>Adequate Yearly Progress Code (EDS)</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>GradeCategory</attrlabl>
+                <attrdef>Grade Category, e.g. Elementary School, Middle School, etc. (EDS)</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>LowestGrade</attrlabl>
+                <attrdef>Lowest grade served at school (EDS)</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>HighestGrade</attrlabl>
+                <attrdef>Highest grade served at school (EDS)</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>TK</attrlabl>
+                <attrdef>Transition to Kindergarten</attrdef>
+                <attrdefs>Educational Data System (EDS)</attrdefs>
+                <attrdomv>
+                                        
+                    <edom>
+                                                
+                        <edomv>Yes</edomv>
+                                                
+                        <edomvd>Has TK program available</edomvd>
+                                                
+                        <edomvds>EDS</edomvds>
+                                            
+                    </edom>
+                                    
+                </attrdomv>
+                <attrdomv>
+                                        
+                    <edom>
+                                                
+                        <edomv>No</edomv>
+                                                
+                        <edomvd>Does not have TK program available</edomvd>
+                                                
+                        <edomvds>EDS</edomvds>
+                                            
+                    </edom>
+                                    
+                </attrdomv>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>CongressionalDistrict</attrlabl>
+                <attrdef>Congressional District of school based on mapped location (GIS)</attrdef>
+                <attrdefs>Geospatial Information System</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>LegislativeDistrict</attrlabl>
+                <attrdef>Legislative District of school (GIS)</attrdef>
+                <attrdefs>Geospatial Information System</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>County</attrlabl>
+                <attrdef>County of school based on mapped location (GIS)</attrdef>
+                <attrdefs>Geospatial Information System</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>GeoCoded_Y</attrlabl>
+                <attrdef>Geocoded latitude coordinate from WAMAS</attrdef>
+                <attrdefs>Washington Master Address Service</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>GeoCoded_X</attrlabl>
+                <attrdef>Geocoded longitude coordinate from WAMAS</attrdef>
+                <attrdefs>Washington Master Address Service</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>BldgLatitude</attrlabl>
+                <attrdef>Building approximate latitude centroid determined by HUD from  National Agriculture Imagery Program (NAIP)</attrdef>
+                <attrdefs>National Agriculture Imagery Program (NAIP)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+            <attr>
+                <attrlabl>BldgLongitude</attrlabl>
+                <attrdef>Building approximate longitude centroid determined by HUD from  National Agriculture Imagery Program (NAIP)</attrdef>
+                <attrdefs>National Agriculture Imagery Program (NAIP)</attrdefs>
+                <begdatea>20251222</begdatea>
+            </attr>
+        </detailed>
+    </eainfo>
+    <metainfo>
+        <metd>20251223</metd>
+        <metc>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>Office of Superintendent of Public Instruction (OSPI)</cntorg>
+                    <cntper>Rick Geittmann</cntper>
+                </cntorgp>
+                <cntpos>Web Application Developer</cntpos>
+                <cntaddr>
+                    <addrtype>physical</addrtype>
+                    <address>600 Washington St. SE</address>
+                    <city>Olympia</city>
+                    <state>Washington</state>
+                    <postal>98504</postal>
+                </cntaddr>
+                <cntvoice>(360) 725-6143</cntvoice>
+            </cntinfo>
+        </metc>
+        <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+        <metstdv>FGDC-STD-001-1998</metstdv>
+        <mettc>local time</mettc>
+    </metainfo>
+</metadata>

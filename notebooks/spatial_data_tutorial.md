@@ -1,0 +1,594 @@
+# Spatial Data Tutorial
+Allie Warren, allison.warren
+2026-03-12
+
+- [Overview](#overview)
+- [Reading and Cleaning Data](#reading-and-cleaning-data)
+  - [What is a Shapefile?](#what-is-a-shapefile)
+  - [Select Data](#select-data)
+  - [Clean Names](#clean-names)
+- [Geocoding School Addresses](#geocoding-school-addresses)
+  - [US Census Geocoder](#us-census-geocoder)
+  - [Combine Geocoding Data](#combine-geocoding-data)
+  - [Pull Washington Shape Data](#pull-washington-shape-data)
+- [Map Plot of WA School Vaccination
+  Data](#map-plot-of-wa-school-vaccination-data)
+  - [All Washington Schools](#all-washington-schools)
+  - [Schools with Low Vaccination
+    Rates](#schools-with-low-vaccination-rates)
+- [Pulling GeoSpatial Data Using the
+  API](#pulling-geospatial-data-using-the-api)
+  - [What is an API?](#what-is-an-api)
+  - [School District Boundaries](#school-district-boundaries)
+- [Visualizing School District Vaccination
+  Data](#visualizing-school-district-vaccination-data)
+  - [Merging Shape Data with District Vaccination
+    Data](#merging-shape-data-with-district-vaccination-data)
+  - [Plot School District Vaccination
+    Data](#plot-school-district-vaccination-data)
+  - [Combine School and District Data for a Single
+    County](#combine-school-and-district-data-for-a-single-county)
+
+## Overview
+
+This tutorial walks through a real-world spatial data workflow using
+school and school district vaccination data from Washington State. The
+vaccination data was downloaded from the [WA DOH School Immunization
+Data
+Dashboard](https://doh.wa.gov/data-and-statistical-reports/washington-tracking-network-wtn/school-immunization/dashboard)and
+the location data is pulled from the [Washington State Geospatial Open
+Data Portal](https://geo.wa.gov/search?q=school). This tutorial shows
+how to:
+
+- Read Excel and spatial shape data files
+- Geocode addresses to latitude/longitude coordinates
+- Pull up-to-date spatial data using an API
+- Combine data sources
+- Create maps using `sf` and `ggplot2`
+
+``` r
+# Package descriptions;
+# readr: read in files
+# dplyr, tidyr, stringr: data manipulation
+# readxl: reading Excel files
+# tidygeocoder: geocoding addresses
+# ggplot2: plotting
+# usmap: us mapping data
+# sf: working with spatial/shape data
+# viridis: color palettes
+# httr2: making API requests
+# jsonlite: parsing JSON responses
+# janitor: data cleaning utilities
+# xml2: Parse XML
+# glue: used for creating strings with variables included
+
+# use pacman for loading/installing the other packages
+if(!require("pacman")) install.packages("pacman") 
+```
+
+    Loading required package: pacman
+
+``` r
+# This load packages
+pacman::p_load(readr, dplyr, tidyr, readxl, tidygeocoder, sf, httr2, stringr, ggplot2, usmap, sf, viridis, jsonlite, janitor, xml2, glue)
+```
+
+## Reading and Cleaning Data
+
+Read excel can read xls or xlsx files. Especially with excel files, it
+is useful to run clean_names(), as excel column names can often have
+inconsistent formats. clean_names() adjusts the column names so they are
+unique and consist only of the \_ character, numbers, and letters.
+
+### What is a Shapefile?
+
+Spatial data describing geographic boundaries (like school districts) is
+often stored as a **shapefile** — a collection of files that together
+define the geometry (shapes) and attributes (data) of geographic
+features and can be used for creating map plots. Each feature in a
+shapefile has:
+
+- A **geometry**: the shape itself, stored as points, lines, or polygons
+- **Attributes**: a table of data associated with each shape (like a
+  name or ID)
+
+In R, the `sf` package represents this as a dataframe with a special
+`geometry` column.
+
+``` r
+# vaccination data source: https://doh.wa.gov/data-and-statistical-reports/washington-tracking-network-wtn/school-immunization/dashboard
+
+# read in school level vaccination data
+school_data <- read_excel("../data/2024-2025SchoolBuilding.xlsx") |> 
+  clean_names()
+
+# read in school district level vaccination data
+# the excel file includes state, county, and school district vaccination data, so we specify which sheet we want to read in
+district_data <- read_excel("../data/2024-2025SchoolYear.xlsx", sheet = 'School District') |> 
+  clean_names()
+
+# read in shape data with the location of WA state public schools
+# data source: https://geo.wa.gov/datasets/2b1977231086490a933ee8522dc85a76_0/explore?location=47.264054%2C-120.796522%2C7
+school_location <- read_sf("../data/WashingtonStatePublicSchools/WashingtonStatePublicSchools.shp")
+```
+
+### Select Data
+
+Select the vaccination data (condition, grade level, and vaccination
+status) we want to visualize.
+
+``` r
+# select data for plotting:
+# decide on condition (data contains Overall, Diptheria, Tetanus, Pertussis, Measles, Mumps, Rubella, Hepatitis B, Varicella, and Polion)
+# and grade level (data contains Seventh Grade, K-12, and Kindergarten)
+# and vaccination level (either Complete, Conditional, Out of Compliance, Exempt, Personal Exemption, Medical Exemption, Religious Exemption, or Religious Membership Excemption)
+condition <- 'Measles'
+select_grade <- 'K-12'
+vaccination_level <- 'Complete'
+
+# filter school level data to selected condition, grade level, and vaccination status 
+school_data_condition <- filter(school_data, disease_or_vaccine == condition,
+                                immunization_status == vaccination_level,
+                                grade == select_grade)
+
+# check that there is only one data point per school
+if(nrow(school_data_condition) != nrow(school_data_condition |> select(school_name, school_district, address) |> distinct())) {
+  print('Multiple data points per school, filtering to just one record per school')
+  # and view any duplicates
+ print(school_data_condition |>
+    filter(duplicated(cbind(school_name, school_district, address)) | duplicated(cbind(school_name, school_district, address), fromLast = TRUE)) |> 
+   select(school_name, count, enrollment, school_district, address))
+  
+  # remove duplicates, keeping only the school with the higher enrollment
+  school_data_condition <- school_data_condition |> 
+    slice_max(enrollment, by = c(school_name, school_district, address), n = 1, with_ties = FALSE)
+}
+```
+
+    [1] "Multiple data points per school, filtering to just one record per school"
+    # A tibble: 2 × 5
+      school_name                count enrollment school_district           address 
+      <chr>                      <dbl>      <dbl> <chr>                     <chr>   
+    1 St. Paul's Lutheran School    65         76 Wenatchee School District 312 Pal…
+    2 St. Paul's Lutheran School    10         13 Wenatchee School District 312 Pal…
+
+``` r
+# filter district level data to selected condition, grade level, and vaccination status
+district_data_condition <- filter(district_data, disease_or_vaccine == condition,
+                                immunization_status == vaccination_level,
+                                grade == select_grade)
+```
+
+### Clean Names
+
+School and district name formats differ between the vaccination data and
+the location data files, so we try to standardize the names to improve
+matching between the two files.
+
+``` r
+# clean school names for better matching between vaccination file and location data
+school_data_condition <- school_data_condition |> 
+  # convert school name to lower case
+  mutate(clean_name = str_to_lower(school_name),
+         # remove text inside of parentheses
+         clean_name = str_replace(clean_name, "\\(.*\\)", ""),
+         # remove school as it is used inconsistently between the two data sources
+         clean_name = str_replace(clean_name, 'school', ''),
+         # replace elem with elementary
+         clean_name = str_replace(clean_name, " elem", " elementary"),
+         # replace & with and
+         clean_name = str_replace(clean_name, "&", "and"),
+         # remove |
+         clean_name = str_replace(clean_name, "\\|", ""),
+         # remove extra whitespace
+         clean_name = str_squish(clean_name))
+
+school_location <- school_location |> 
+  # convert school name to lower case
+  mutate(clean_name = str_to_lower(School),
+         # remove text inside of parentheses
+         clean_name = str_replace(clean_name, "\\(.*\\)", ""),
+         # remove school as it is used inconsistently between the two data sources
+         clean_name = str_replace(clean_name, 'school', ''),
+         # replace elem with elementary
+         clean_name = str_replace(clean_name, " elem", " elementary"),
+         # replace prog with program
+         clean_name = str_replace(clean_name, " prog$", " program"),
+         # replace & with and
+         clean_name = str_replace(clean_name, "&", "and"),
+         # remove |
+         clean_name = str_replace(clean_name, "\\|", ""),
+         # remove extra whitespace
+         clean_name = str_squish(clean_name))
+        
+district_data_condition <- district_data_condition |> 
+  # clean up the name for one of the districts
+  mutate(school_district = str_replace(school_district, "Hist\\.", "Historical"))
+
+# combine school vaccination data and school location data using the created cleaned school name
+combined_school <- left_join(school_data_condition, school_location, join_by(clean_name, school_district ==LEAName ))
+
+# identify the number of schools in the vaccination data that could not be mapped to the school location file - counting total and just public schools
+non_geocoded_schools_count <- nrow(filter(combined_school, is.na(SchoolCode)))
+non_geocoded_pub_schools_count <- nrow(filter(combined_school, school_type == 'PUBLIC',
+                                        is.na(SchoolCode)))
+```
+
+The shape data file only contains data on public schools and may not
+match all schools in the vaccination file. Including the private
+schools, there are still 667 total schools in the vaccination data that
+we do not have location data for, 203 of which are public schools.
+
+## Geocoding School Addresses
+
+Geocoding converts a human-readable address (e.g. “123 Main St, Seattle,
+WA”) into geographic coordinates (latitude and longitude) that can be
+plotted on a map. The `tidygeocoder` package provides a tidy interface
+to several geocoding services. We will use the [US Census
+geocoder](https://geocoding.geo.census.gov/geocoder/), which is free and
+requires no API key. **This should only be used on public data** as it
+is sending data to an outside service. We can use geocoding to identify
+the location of the schools that we only have addresses for and which we
+could not map to the geospatial location file.
+
+### US Census Geocoder
+
+``` r
+# I am only going to geocode a subset of the data for this example - so we will just geocode the public schools that we could not map to the location file
+nongeocoded_public_schools <- filter(combined_school, is.na(SchoolCode),
+                                     school_type == 'PUBLIC')
+
+# add a state column for geocoding purposes
+nongeocoded_public_schools <- nongeocoded_public_schools |> 
+  mutate(state = 'Washington')
+
+# pass the dataframe containing the address information (street, city, state, and zipcode) to tidygeocoder::geocode using the US Census API
+# to geocode the address, which will return latitude/longitude data. The geocoder can accommodate abbreviations and some differences in format.
+geocoded_public_schools <- nongeocoded_public_schools |>
+  geocode(street = address,
+          city = city,
+          state = state,
+          postalcode = zip,
+          method = "census", # Using the US Census geocoding service - free, no API key required, can geocode up to 10,000 addresses
+          lat = latitude,
+          long = longitude)
+```
+
+    Passing 189 addresses to the US Census batch geocoder
+
+    Query completed in: 1.9 seconds
+
+``` r
+# this may still be unable to geocode all the addresses - we will remove these for future plotting
+geocoding_fail_count <- nrow(filter(geocoded_public_schools, is.na(latitude)))
+geocoded_public_schools <- filter(geocoded_public_schools, !is.na(latitude))
+
+# convert to a geometry shape dataframe
+geocoded_public_schools <- st_as_sf(geocoded_public_schools, coords = c('longitude', 'latitude'), remove = FALSE)
+```
+
+**Note:** Some addresses may fail to geocode due to formatting issues,
+PO boxes, or addresses not found in the Census database. Inspect
+failures and consider cleaning those addresses manually or using a
+different geocoder. In our attempt 13 addresses failed to geocode and
+were removed from our data.
+
+### Combine Geocoding Data
+
+``` r
+# combine all data, removing any data which were were unable to geocode
+# combine the school vaccination data we geocoded using the shape file
+combined_school_filtered <- filter(combined_school, !is.na(SchoolCode)) |> 
+  rename(latitude = BldgLatitu,
+         longitude = BldgLongit) |> 
+  select(school_year, geography, grade, disease_or_vaccine, immunization_status,
+         count, enrollment, percent, school_district, school_name, address, city, zip, school_type, county, SchoolCode,latitude, longitude, geometry)
+
+# combine with the school vaccination data we geocoded using US Census geocoder
+geocoded_school_filtered <-geocoded_public_schools |> 
+         select(school_year, geography, grade, disease_or_vaccine, immunization_status,
+                count, enrollment, percent, school_district, school_name, address, city, zip, school_type, county, SchoolCode,latitude, longitude, geometry)
+
+combined_school_filtered <- rbind(combined_school_filtered, geocoded_school_filtered)
+```
+
+### Pull Washington Shape Data
+
+The usmap package contains geographic data on all US counties, which can
+be used for creating a map plot.
+
+``` r
+# pull US mapping data
+us_county_map <- usmap::us_map('counties')
+# subset to WA state data
+WA_map_counties <- filter(us_county_map, abbr == 'WA') %>%
+  # simplify county names
+  mutate(county = str_replace(county, " County", ""))
+# convert a geometry object to an sfc object for plotting purposes
+WA_sfc <- st_as_sfc(WA_map_counties, crs = usmap_csv()@projargs)
+# get subset of map object
+# creates sf object, which extends data.frame like objects with a  simple feature list column
+WA_sf_map <- st_sf(data.frame(fips = unique(WA_map_counties$fips), county = WA_map_counties$county, geometry = WA_sfc))
+# find the centroid of each county
+WA_sf_map$centroids <- st_centroid(WA_sf_map$geometry)
+```
+
+## Map Plot of WA School Vaccination Data
+
+### All Washington Schools
+
+``` r
+wa_vacc_map <- ggplot(WA_sf_map) +
+  # use geom_sf to create map - pulls from geometry column in the data
+  # set fill for each county
+  geom_sf(fill = 'azure2', color = 'white') +
+  # add county labels
+  geom_sf_text(aes(label = county), size = 3, color = 'black') +
+  # plot the school locations based on lat/long - size each point by the size of the school and color by the vaccination rate
+  geom_point(data = filter(combined_school_filtered, !is.na(percent)), aes(longitude, latitude, fill = percent, size = enrollment),pch = 21, alpha = .8) +
+  coord_sf(crs = st_crs(4283)) + #needed to make flat/horizontally aligned map for visualizing purposes
+  scale_fill_viridis() +
+  # set clean theme that removes axis labels
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  # add title based on data filtered
+  labs(fill = paste(condition, 'Vaccination Rate'), size = 'School Enrollment') +
+  ggtitle(paste('Washington', condition, 'Vaccination Rates in Schools'))
+
+wa_vacc_map
+```
+
+    Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not
+    give correct results for longitude/latitude data
+
+![](spatial_data_tutorial_files/figure-commonmark/unnamed-chunk-8-1.png)
+
+### Schools with Low Vaccination Rates
+
+This plot above is difficult to visualize as there are many schools,
+which creates many overlapping data points. We can create a second plot
+that just shows schools with a vaccination rate less than 85%.
+
+``` r
+wa_low_vacc_map <- ggplot(WA_sf_map) +
+  # use geom_sf to create map - pulls from geometry column in the data
+  # set fill for each county
+  geom_sf(fill = 'azure2', color = 'white') +
+  # add county labels
+  geom_sf_text(aes(label = county), size = 3, color = 'black') +
+  # filter to low vaccine rate schools and plot the school locations based on lat/long - size each point by the size of the school and color by the vaccination rate
+  geom_point(data = filter(combined_school_filtered, !is.na(percent), percent < .85), aes(longitude, latitude, fill = percent, size = enrollment),pch = 21, alpha = .8) +
+  coord_sf(crs = st_crs(4283)) + #needed to make flat/horizontally aligned map for visualizing purposes
+  scale_fill_viridis() +
+    # set clean theme that removes axis labels
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)) +
+  # add title based on data filtered
+  labs(fill = paste(condition, 'Vaccination Rate'), size = 'School Enrollment',
+       title = paste('Washington', condition, 'Vaccination Rates in Schools'),
+        subtitle = 'For Schools with a Vaccination Rate less than 85%')
+
+wa_low_vacc_map
+```
+
+    Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not
+    give correct results for longitude/latitude data
+
+![](spatial_data_tutorial_files/figure-commonmark/unnamed-chunk-9-1.png)
+
+## Pulling GeoSpatial Data Using the API
+
+### What is an API?
+
+An **API** (Application Programming Interface) is a structured way to
+request data from a server over the internet. Instead of downloading a
+file manually, you send a request to a URL with parameters specifying
+what data you want, and the server returns data in the format specified
+(often JSON)
+
+The Washington State Geospatial Open Data Portal exposes school district
+boundaries via an **ArcGIS REST API**. In the example above we
+downloaded the school location shape file from the Washington State
+Geospatial Open Data Portal and used it for plotting. We can also pull
+that data by querying the API, which ensures that our data is up to
+date.
+
+### School District Boundaries
+
+We will use the API to pull the school district boundary data from the
+[Washington State Geospatial Open Data
+Portal](https://geo.wa.gov/datasets/72ad21c67ecf4f21bc794d4d21485d86_0/explore?location=47.265238%2C-120.817601%2C7).
+
+#### Metadata Query
+
+``` r
+# URL for the school district data
+service_URL <- "https://services9.arcgis.com/fWunDXKkvCx1CM4b/arcgis/rest/services/Washington_School_Districts/FeatureServer"
+
+# we will pull the data, as well as info on when the data was published, the format, and record when we accessed the data
+district_metadata <- list(service_URL = service_URL)
+
+## Query metadata to get published date
+# This builds and sends a GET request to the metadata endpoint of the API, and retrieve the response body as a plain string, and parse it as XML
+metadata_req <- request(paste0(service_URL, "/info/metadata")) |>
+  req_perform() |> # send the HTTP request
+  resp_body_string() |> # extract the response as a raw string
+  read_xml() # parse the string into XML
+
+# extract the publication date from the metadata
+esri_date <- metadata_req |>
+  xml_find_first(".//Esri/CreaDate") |> # search XML for create data element
+  xml_text() # extract that element as a string
+
+# format the string returned into a data
+district_metadata$publish_date <- paste(substr(esri_date, 1, 4),
+                               substr(esri_date, 5, 6),
+                               substr(esri_date, 7, 8),
+                               sep = "-")
+
+## Basic info used for our REST API queries
+endpoint  <- paste0(service_URL, "/0/query")
+crs <- 4326 # use the WGS84 coordinate system
+response_format <- 'geojson' # format for returning the data
+where_clause <- "1=1" # returns all records, no filtering
+```
+
+#### Fetch the Data
+
+``` r
+## Retrieve the count from the server so you know how many records to expect
+expected_count <- request(endpoint) |>
+  req_url_query(where = where_clause, # filter to the records we set - in this case all records
+                f = response_format, # select the respoinse format
+                returnCountOnly = "true") |> # only return the count of records
+  req_perform() |> # send the HTTP request and get the response
+  resp_body_json() |> # parse th response as JSON into an R list
+  _$properties$count # extract the count value from the list
+
+cat(glue::glue("Expecting {expected_count} records"))
+```
+
+    Expecting 295 records
+
+``` r
+## Query the actual data - similarily filtering to all records and requesting geojson format data
+district_shape_raw <- request(endpoint) |>
+  req_url_query(where = where_clause,
+                f = response_format,
+                outFields = "*", # returns all attribute collumns
+                outSR = crs) |> # set the output coordinate reference system
+  req_perform() |> # send the HTTP request and get the response
+  resp_body_string() # extract the response as a raw string
+
+# Parse the raw geojson string into a nested R list, preserving the geometry structure
+district_shape_dataset <- fromJSON(district_shape_raw, simplifyVector = FALSE)
+
+## Check we got all expected records
+received_count <- length(district_shape_dataset$features)
+if(received_count != expected_count) {
+  cat(glue::glue("Something went wrong with the request. Expected {expected_count} items, got {received_count}"))
+} else {
+   cat(glue::glue("Request succeeded. {received_count} records pulled"))
+}
+```
+
+    Request succeeded. 295 records pulled
+
+``` r
+## print the fields from the data that was pulled
+district_fields <- names(district_shape_dataset$features[[1]]$properties)
+cat("Fields returned: ", paste(district_fields, collapse = ", "))
+```
+
+    Fields returned:  OBJECTID, LEACode_1, LEAName_1, ShortName, ESDCode, ESDNumber, ESDName, PhysicalAddress, URL, City, County, Counties, CongressionalDistrict, LegislativeDistrict, TransportationRegion, NonHigh, NonHighHighGrade, CensusSDLEA, SDTYPE, LowerGrade, UpperGrade, DataDate, Shape__Area, Shape__Length
+
+#### Converting to an `sf` Object
+
+The API returns geometry as a list of polygon rings (sets of
+coordinates). We convert this into an `sf` object so we can use spatial
+operations and plotting.
+
+``` r
+# Convert to sf object 
+district_shape_sf <- read_sf(district_shape_raw)
+message("Coordinate Reference System (CRS): ", st_crs(district_shape_sf)$input)
+```
+
+    Coordinate Reference System (CRS): WGS 84
+
+``` r
+# store metadata
+district_metadata$crs <- paste0("EPSG:", st_crs(district_shape_sf)$epsg)
+district_metadata$accessed <- as.character(Sys.Date())
+
+if (crs == 4326) {
+  district_metadata$ggplot_crs <- "WGS84"    # equivalent of plate carrée / mercator note
+} else {
+  stop("This example was only designed for use with EPSG:4326")
+}
+
+# view the data we pulled
+ggplot(district_shape_sf) +
+  # use geom_sf to plot the shape data - will pull from the geometry field in the provided data
+  geom_sf(fill = 'steelblue', color = 'white') +
+  # set the coordinate system
+  coord_sf(crs = st_crs(crs))  +
+  # remove axis grid
+  theme_void() +
+  # center plot titles
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)) +
+  # set labels
+  labs(title = 'School District Boundary Data',
+       subtitle = 'From WA Geospatial Portal')
+```
+
+![](spatial_data_tutorial_files/figure-commonmark/unnamed-chunk-12-1.png)
+
+## Visualizing School District Vaccination Data
+
+### Merging Shape Data with District Vaccination Data
+
+``` r
+# join the district boundary file and the district level vaccination data
+district_condition_sf <- full_join(district_data_condition, district_shape_sf, join_by(school_district == LEAName_1))
+
+# convert to sf for plotting
+district_condition_sf <- st_sf(district_condition_sf)
+```
+
+### Plot School District Vaccination Data
+
+``` r
+ggplot(district_condition_sf) +
+  # use geom_sf to plot the shape data - will pull from the geometry field in the provided data
+  # filling in the districts using the vaccination rate
+  geom_sf(aes(fill = percent), color = 'white') +
+  # set the coordinate system
+  coord_sf(crs = st_crs(crs))  +
+  # set a color palette for the fill
+  scale_fill_viridis() +
+  # remove axis lines
+  theme_void() +
+  # center and bold title
+  theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5)) +
+  # labels
+  labs(title = paste('School District', condition, 'Vaccination Rates'),
+       fill = 'Percent with\nComplete Vaccination',
+       caption = 'gray districts are missing data')
+```
+
+![](spatial_data_tutorial_files/figure-commonmark/unnamed-chunk-14-1.png)
+
+### Combine School and District Data for a Single County
+
+``` r
+selected_county <- "Mason"
+# filter to selected county
+ggplot(filter(district_condition_sf, County == selected_county)) +
+  # use geom_sf to plot the shape data - will pull from the geometry field in the provided data
+  # filling in the districts using the vaccination rate
+  geom_sf(aes(fill = percent), color = 'white', alpha = .7) +
+  # we could add district labels, although in practice they are hard to view
+  # geom_sf_text(aes(label = school_district), size = 2, color = 'black') +
+  # add in the schools for the selected county, filling by vaccination rate and sizing by enrollment
+  geom_point(data = filter(combined_school_filtered, !is.na(percent), county == selected_county),
+             aes(longitude, latitude, fill = percent, size = enrollment),
+             pch = 21, alpha = .8) +
+  # set coordinate system
+  coord_sf(crs = st_crs(crs)) +
+  # fill color palette
+  scale_fill_viridis() +
+  # remove axis lines
+  theme_void() +
+  # center and format titles
+  theme(plot.title = element_text(size = 15, face = "bold",hjust = 0.5),
+         plot.subtitle = element_text(size = 13, hjust = 0.5)) +
+  # labels
+  labs(title = paste('School and School District', condition, 'Vaccination Rates'),
+       subtitle = paste(selected_county, 'County'),
+       fill = 'Percent with\nComplete Vaccination')
+```
+
+![](spatial_data_tutorial_files/figure-commonmark/unnamed-chunk-15-1.png)
