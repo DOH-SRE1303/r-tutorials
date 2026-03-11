@@ -20,6 +20,8 @@ The notebooks (found in the notebooks folder) are:
 - [Advanced R](https://adv-r.hadley.nz/index.html): R textbook for more advanced R concepts
 - [swirl](https://github.com/swirldev/swirl_courses?tab=readme-ov-file#swirl-courses): interactive R courses
 - [Applied Epi Tutorials](https://www.appliedepi.org/resources/tutorials.html): Introductory R courses for Epis. You will need to make a free account before you can access the tutorials.
+- [Data Science for Environmental Health Online Course Material](https://daseh.org/materials_schedule.html): Materials from the DaSEH course, which is tailored for beginners and novices in R programming, with instructions on importing, wrangling, visualizing, and analyzing data.
+- [repicentre](https://epicentre-msf.github.io/repicentre//explore.html): open source platform for learning R for humanitarian contexts, with sessions on data visualization, exploration, importation, and manipulation, working with public health data and more.
 
 ## Data Visualization Resources
 - [The R Graph Gallery](https://r-graph-gallery.com/): a collection of many different types of charts made with R, with a focus on using tidyverse and ggplot2, good for inspiration and showing the different possibilities of creating visualizations with R. Also shows the various [theme options](https://r-graph-gallery.com/192-ggplot-themes.html) when using ggplot2.

@@ -35,10 +35,10 @@ This tutorial walks through a real-world spatial data workflow using
 school and school district vaccination data from Washington State. The
 vaccination data was downloaded from the [WA DOH School Immunization
 Data
-Dashboard](https://doh.wa.gov/data-and-statistical-reports/washington-tracking-network-wtn/school-immunization/dashboard)and
-the location data is pulled from the [Washington State Geospatial Open
-Data Portal](https://geo.wa.gov/search?q=school). This tutorial shows
-how to:
+Dashboard](https://doh.wa.gov/data-and-statistical-reports/washington-tracking-network-wtn/school-immunization/dashboard)
+and the location data is pulled from the [Washington State Geospatial
+Open Data Portal](https://geo.wa.gov/search?q=school). This tutorial
+shows how to:
 
 - Read Excel and spatial shape data files
 - Geocode addresses to latitude/longitude coordinates
@@ -206,7 +206,7 @@ district_data_condition <- district_data_condition |>
   mutate(school_district = str_replace(school_district, "Hist\\.", "Historical"))
 
 # combine school vaccination data and school location data using the created cleaned school name
-combined_school <- left_join(school_data_condition, school_location, join_by(clean_name, school_district ==LEAName ))
+combined_school <- left_join(school_data_condition, school_location, join_by(clean_name, school_district == LEAName))
 
 # identify the number of schools in the vaccination data that could not be mapped to the school location file - counting total and just public schools
 non_geocoded_schools_count <- nrow(filter(combined_school, is.na(SchoolCode)))
@@ -223,8 +223,9 @@ we do not have location data for, 203 of which are public schools.
 
 Geocoding converts a human-readable address (e.g. “123 Main St, Seattle,
 WA”) into geographic coordinates (latitude and longitude) that can be
-plotted on a map. The `tidygeocoder` package provides a tidy interface
-to several geocoding services. We will use the [US Census
+plotted on a map. The [tidygeocoder
+package](https://jessecambon.github.io/tidygeocoder/) provides a tidy
+interface to several geocoding services. We will use the [US Census
 geocoder](https://geocoding.geo.census.gov/geocoder/), which is free and
 requires no API key. **This should only be used on public data** as it
 is sending data to an outside service. We can use geocoding to identify
@@ -256,7 +257,7 @@ geocoded_public_schools <- nongeocoded_public_schools |>
 
     Passing 189 addresses to the US Census batch geocoder
 
-    Query completed in: 1.9 seconds
+    Query completed in: 2.5 seconds
 
 ``` r
 # this may still be unable to geocode all the addresses - we will remove these for future plotting
