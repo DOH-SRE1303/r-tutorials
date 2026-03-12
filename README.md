@@ -4,10 +4,15 @@ Tutorials for common R workflows, presented at R Office Hours
 Each notebook focuses on a different topic. The goal of the notebooks is to show examples of the topic on public health-style data. The notebooks try to show a variety of ways to do things and the various options available - the options are meant to be examples, but are not always best practices.
 All data needed to run these notebooks can be found in the data folder in this repo. The data is all publicly available, or is synthetic data that has been created to mimic real world public-health data.
 For each notebook there is a .qmd file, which is a Quarto document which can be used to run the code yourself, and there is a .md file, which is a markdown document which allows you to see the code and visualizations in their rendered form in this repo.
+If you identify any errors or have any questions feel free to reach out.
 
 The notebooks (found in the notebooks folder) are:
-- exploratory_data_analysis: this notebook shows an example of how to start exploring a data set, including cleaning the data, grouping and combining data, calculating summary statistics, and visualizing the data
-- survey_analysis: this notebook gives examples of how to analyze survey data, using the R {survey} package
+- [exploratory_data_analysis](https://github.com/WA-LHJ-Analytic-Resources/r-tutorials/blob/main/notebooks/exploratory_data_analysis.md): this notebook shows an example of how to start exploring a data set, including cleaning the data, grouping and combining data, calculating summary statistics, and visualizing the data
+- [survey_analysis](https://github.com/WA-LHJ-Analytic-Resources/r-tutorials/blob/main/notebooks/survey_analysis.md): this notebook gives examples of how to analyze survey data, using the R {survey} package
+- [introduction_to_renv](https://github.com/WA-LHJ-Analytic-Resources/r-tutorials/blob/main/notebooks/introduction_to_renv.md): this notebook explains how to use renv to create reproducible environments for R projects
+- [production_ready_code](https://github.com/WA-LHJ-Analytic-Resources/r-tutorials/blob/main/notebooks/production_ready_code.md): this notebook introduces concepts that are useful for developing automated processes and efficient code, such as logging, error handling, input validation, parallelization, and more
+- [NHANES_survey_analysis](https://github.com/WA-LHJ-Analytic-Resources/r-tutorials/blob/main/notebooks/NHANES_survey_analysis.md): this notebook gives an example of analysis of NHANES survey data, based on the cdc SUDAAN analysis example
+- [spatial_data_tutorial](https://github.com/WA-LHJ-Analytic-Resources/r-tutorials/blob/main/notebooks/spatial_data_tutorial.md): this notebook gives an example of working with spatial data, including reading shape data files, geocoding addresses, pulling data from the Washington State Geospatial Open Data Portal using the API, and visualizing spatial data using ggplot2
 
 ## Additional Learning Resources
 

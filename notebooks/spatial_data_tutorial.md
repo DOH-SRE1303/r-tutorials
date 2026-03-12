@@ -257,7 +257,7 @@ geocoded_public_schools <- nongeocoded_public_schools |>
 
     Passing 189 addresses to the US Census batch geocoder
 
-    Query completed in: 2 seconds
+    Query completed in: 1.9 seconds
 
 ``` r
 # this may still be unable to geocode all the addresses - we will remove these for future plotting
@@ -302,16 +302,11 @@ be used for creating a map plot.
 # pull US mapping data
 us_county_map <- usmap::us_map('counties')
 # subset to WA state data
-WA_map_counties <- filter(us_county_map, abbr == 'WA') %>%
+WA_map_counties <- filter(us_county_map, abbr == 'WA') |> 
   # simplify county names
   mutate(county = str_replace(county, " County", ""))
-# convert a geometry object to an sfc object for plotting purposes
-WA_sfc <- st_as_sfc(WA_map_counties, crs = usmap_csv()@projargs)
-# get subset of map object
-# creates sf object, which extends data.frame like objects with a  simple feature list column
-WA_sf_map <- st_sf(data.frame(fips = unique(WA_map_counties$fips), county = WA_map_counties$county, geometry = WA_sfc))
-# find the centroid of each county
-WA_sf_map$centroids <- st_centroid(WA_sf_map$geometry)
+# convert a geometry object to an sf object for plotting purposes
+WA_sf_map <- st_as_sf(WA_map_counties, crs = usmap_csv()@projargs)
 ```
 
 ## Map Plot of WA School Vaccination Data
