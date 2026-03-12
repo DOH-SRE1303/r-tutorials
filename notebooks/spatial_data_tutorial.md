@@ -257,7 +257,7 @@ geocoded_public_schools <- nongeocoded_public_schools |>
 
     Passing 189 addresses to the US Census batch geocoder
 
-    Query completed in: 2.5 seconds
+    Query completed in: 2 seconds
 
 ``` r
 # this may still be unable to geocode all the addresses - we will remove these for future plotting
@@ -327,7 +327,7 @@ wa_vacc_map <- ggplot(WA_sf_map) +
   geom_sf_text(aes(label = county), size = 3, color = 'black') +
   # plot the school locations based on lat/long - size each point by the size of the school and color by the vaccination rate
   geom_point(data = filter(combined_school_filtered, !is.na(percent)), aes(longitude, latitude, fill = percent, size = enrollment),pch = 21, alpha = .8) +
-  coord_sf(crs = st_crs(4283)) + #needed to make flat/horizontally aligned map for visualizing purposes
+  coord_sf(crs = st_crs(4326)) + #needed to make flat/horizontally aligned map for visualizing purposes
   scale_fill_viridis() +
   # set clean theme that removes axis labels
   theme_void() +
@@ -359,7 +359,7 @@ wa_low_vacc_map <- ggplot(WA_sf_map) +
   geom_sf_text(aes(label = county), size = 3, color = 'black') +
   # filter to low vaccine rate schools and plot the school locations based on lat/long - size each point by the size of the school and color by the vaccination rate
   geom_point(data = filter(combined_school_filtered, !is.na(percent), percent < .85), aes(longitude, latitude, fill = percent, size = enrollment),pch = 21, alpha = .8) +
-  coord_sf(crs = st_crs(4283)) + #needed to make flat/horizontally aligned map for visualizing purposes
+  coord_sf(crs = st_crs(4326)) + #needed to make flat/horizontally aligned map for visualizing purposes
   scale_fill_viridis() +
     # set clean theme that removes axis labels
   theme_void() +
@@ -457,12 +457,12 @@ cat(glue::glue("Expecting {expected_count} records"))
 district_shape_raw <- request(endpoint) |>
   req_url_query(where = where_clause,
                 f = response_format,
-                outFields = "*", # returns all attribute collumns
+                outFields = "*", # returns all attribute columns
                 outSR = crs) |> # set the output coordinate reference system
   req_perform() |> # send the HTTP request and get the response
   resp_body_string() # extract the response as a raw string
 
-# Parse the raw geojson string into a nested R list, preserving the geometry structure
+# Parse the raw geojson preserving the geometry structure
 district_shape_dataset <- fromJSON(district_shape_raw, simplifyVector = FALSE)
 
 ## Check we got all expected records
