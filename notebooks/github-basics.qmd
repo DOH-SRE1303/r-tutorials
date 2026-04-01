@@ -1,0 +1,193 @@
+---
+title: "github-basics"
+format: html
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+## 0 Prerequisites
+
+### Install
+
+You must have:
+
+-   Git SCM installed. See <https://git-scm.com/install/windows>
+-   RStudio installed. See <https://posit.co/download/rstudio-desktop/>
+
+### Configuration
+
+- Install `usethis` R package
+- "Vaccinate" yourself with `usethis::git_vaccinate`; sets global .gitignore
+- Configure your Git credentials (username and email must match GitHub)
+
+```shell
+git config --global user.name "Your Name"
+git config --global user.email "your_email@example.com"
+```
+
+Check with:
+
+```shell
+git config user.name
+git config user.email
+```
+
+Or open it directly
+
+```shell
+git config --global --edit
+```
+
+### GitHub authentication
+There are three common ways to authenticate with GitHub when using Git and RStudio.
+
+### 1. HTTPS (Credential Manager) — recommended default
+- Uses HTTPS remotes (`https://github.com/...`)
+- Authentication is handled by your system’s credential manager (e.g., Git Credential Manager)
+- May open a browser sign-in on first use
+- Credentials are stored securely and reused
+
+**Best for:**
+- Most users  
+- Interactive RStudio workflows  
+- Minimal setup  
+
+---
+
+### 2. Personal Access Token (PAT)
+- A token used instead of a password over HTTPS
+- Stored in a credential manager or environment variables (e.g., `.Renviron`)
+- Commonly used by R packages that interact with GitHub (e.g., `usethis`)
+
+**Best for:**
+- GitHub API usage from R  
+- Automation and scripting  
+- Environments without credential manager support  
+
+---
+
+### 3. SSH (Secure Shell)
+- Uses SSH remotes (`git@github.com:...`)
+- Authentication via public/private key pair
+- No browser prompts or tokens required
+
+**Best for:**
+- Technical users  
+- Long-term, low-friction Git usage  
+- Stable development environments  
+
+---
+
+## Recommendation
+
+For most users, use **HTTPS with Credential Manager**.
+
+- Use **SSH** if you prefer a key-based setup with fewer prompts  
+- Use **PATs** when working with GitHub from R packages or automation
+
+## 1 GitHub Flow
+
+- Use Skyler's video or graphics
+
+## 2 Start on GitHub ↔ Start locally
+
+### 2.1 GitHub-first workflow
+
+This is the easiest default for most people, especially beginners.
+
+**Typical sequence:**
+
+1.  Create repository on GitHub
+2.  In RStudio: *New Project → Version Control → Git → paste URL*
+3.  Start developing project
+4.  Commit locally
+5.  Push to GitHub
+
+**Or, for migrating existing work:**
+
+3.  Copy existing project files into the cloned repo folder
+4.  Review files before committing
+5.  Commit locally
+6.  Push to GitHub
+
+#### Why this works well
+
+-   The remote exists from the start; no config needed
+-   People are less likely to lose track of where the repo lives
+-   It encourages checking what is actually being added before first
+    push
+-   It fits well with browser-based repo setup, README, .gitignore, and
+    visibility settings
+
+### 2.2 Local-first workflow
+
+This is useful for people who already have an RStudio project or local
+Git repo.
+
+Typical sequence:
+
+- Start with an existing local project folder
+- Initialize Git locally if needed
+- Commit project files locally
+- Create an empty repository on GitHub
+- Add the GitHub repository as the remote
+- Push/publish local history to GitHub
+
+After committing, you'll need to set the remote repo yourself in the git CLI:
+
+```shell
+git remote add origin <repo-url>
+git branch -M main
+git push -u origin main
+```
+
+## Collaboration
+
+Some basic norms used across GitHub:
+ - Do not push directly to `main`/production branch/default branch
+ - Create a branch for your work
+ - Open a pull request
+ - Merge your branch after review
+
+### Repository Setup Recommendations
+
+1. Add your collaborators with appropriate role (don't forget!).`write` is collab default.
+2. Protect your production or default branch from direct writes (include admin override)
+  - Require pull requests before merging
+  - Require at least 1 approval (optional but recommended)
+  - Require status checks (if you use CI, otherwise leave off)
+  - Prevent force pushes
+  - Prevent deletion
+  
+This enforces:
+- No direct "pushes" to default branch
+- All changes go through pull requests
+
+3. Set default branch to `main`, if not already (for consistency)
+
+4. Add or update a .gitignore if you did not during repo creation
+
+5. Add a README with minimum details on your repo/project
+  - What the project is
+  - How to get started
+  - Basic structure
+  - What else do your collaborators need to use this repo?
+  
+6. Use GitHub Issues, consider using Discussions
+  - tracking tasks
+  - documenting bugs
+  - coordinating work
+
+### Collaboration workflows
+
+#### Simplest: Direct-push workflow
+Use for solo work or very small teams.
+
+Add Skyler's diagram
+
+#### Branch and pull request (PR) workflow
+Use for most shared projects.
+
+Add Skyler's diagram
+
