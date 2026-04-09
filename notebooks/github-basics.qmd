@@ -11,6 +11,9 @@ format:
     toc-depth: 3
     toc-expand: true
     embed-resources: true
+    code-overflow: wrap
+    code-fold: false
+    code-tools: true
 editor: 
   markdown: 
     wrap: 72
@@ -28,11 +31,15 @@ You must have:
 -   Git SCM installed. See <https://git-scm.com/install/windows>
 -   RStudio installed. See <https://posit.co/download/rstudio-desktop/>
 
+Optionally of interest:
+
+- GitHub Desktop app
+
 ## Configuration
 
 ### Get Set Up
 
-Install `usethis` R package
+Install [`usethis`](https://usethis.r-lib.org/) R package
 
 ```{r}
 install.packages("usethis")
@@ -87,7 +94,7 @@ Or open it directly
 git config --global --edit
 ```
 
-## GitHub authentication
+## GitHub Authentication
 
 There are three common ways to authenticate with GitHub when using Git
 and RStudio.
@@ -131,7 +138,7 @@ For most users, use **HTTPS with Credential Manager**.
 - Automation and scripting\
 - Environments without credential manager support
 
-See: https://happygitwithr.com/https-pat#https-pat
+See: <https://happygitwithr.com/https-pat#https-pat>
 
 ------------------------------------------------------------------------
 
@@ -147,7 +154,7 @@ See: https://happygitwithr.com/https-pat#https-pat
 - Long-term, low-friction Git usage\
 - Stable development environments
 
-See: https://happygitwithr.com/ssh-keys#ssh-keys
+See: <https://happygitwithr.com/ssh-keys#ssh-keys>
 
 ------------------------------------------------------------------------
 
@@ -163,7 +170,7 @@ See: https://happygitwithr.com/ssh-keys#ssh-keys
 
 ## GitHub-first workflow
 
-This is the easiest default for most people, especially beginners.
+Starting on GitHub is the easiest default for most people, especially beginners.
 
 **Typical sequence:**
 
@@ -191,12 +198,10 @@ This is the easiest default for most people, especially beginners.
 
 ## Local-first workflow
 
-
-
 This is useful for people who already have an RStudio project or local
 Git repo.
 
-``` mermaid
+```{mermaid}
 flowchart LR
     A["**1. Start with existing project folder**"] --> B["**2. Initialize Git (if needed)**<br/><i>git init</i>"]
     
@@ -223,7 +228,7 @@ Typical sequence:
 After committing, you'll need to set the remote repo yourself in the git
 CLI:
 
-``` shell
+``` bash
 git remote add origin <repo-url>
 git branch -M main
 git push -u origin main
@@ -304,7 +309,7 @@ through pull requests
 
 Use for solo work or very small teams.
 
-``` mermaid
+```{mermaid}
 flowchart LR
     A[Clone repo] --> B[Edit files]
     B --> C[Commit]
@@ -338,21 +343,24 @@ and other CI/CD tasks.
 Merge conflicts will happen. Their appearance doesn't mean you've done something wrong!
 
 ### Resolve in GitHub.com
+
 See: [Resolving a merge conflict on GitHub - GitHub Docs](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-on-github)
 
 ### Resolving in git CLI
+
 For git CLI merge conflict resolution, see: [Dealing with Conflicts - happygitwithR](https://happygitwithr.com/git-branches.html?q=conflict#dealing-with-conflicts)
 
 Most important parts to remember:
+
 - Branches cannot be merged if there are conflicts
 - Someone must decide what to keep
 - A commit is required to resolve conflicts
 - Conflicts add flags to your files! These must be removed before you commit your conflict resolution
 - Multiple conflicts mean there will be multiple sets of flags
 
-Example merge conflict in your code/text/file when resolving
+Example merge conflict in your code/text/file when resolving:
 
-```html
+``` html
 <<<<<<< HEAD:example-conflict.md
 This is what your base branch file has. You know this is true because
 the flag shows HEAD. This is the start of the conflict.
@@ -366,11 +374,11 @@ The conflict change ends when you see the line below this next.
 
 ### Resolving via GitHub Desktop app + your editor of choice
 
-See youtube examples, like: [](https://www.youtube.com/watch?v=7jYtcrnnccU)
+See youtuber examples, like: [GitHub Desktop app merge conflict walkthrough - Max O'Didly](https://www.youtube.com/watch?v=7jYtcrnnccU)
 
 You have to create a new commit on the target branch to resolve the conflict in the merge. Don't resolve on main branch. This is what the above example would look like after flags removed and you've chosen the content to keep or update in the conflicting segments of your files.
 
-```markdown
+``` markdown
 All flags are removed.
 Just the text you want to keep remain.
 There is always a "<<<<<<< HEAD", "=======", and a ">>>>>>> branch_name" per conflict.
