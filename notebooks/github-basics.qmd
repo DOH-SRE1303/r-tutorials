@@ -377,3 +377,4 @@ There is always a "<<<<<<< HEAD", "=======", and a ">>>>>>> branch_name" per con
 I suggest using ctrl+r to find them and make sure they are fully removed
 or you'll need to make another commit to remove them later.
 ```
+
