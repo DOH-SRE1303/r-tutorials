@@ -386,3 +386,53 @@ I suggest using ctrl+r to find them and make sure they are fully removed
 or you'll need to make another commit to remove them later.
 ```
 
+# Other Tips and Tricks
+Before attempting any of these tips and tricks on important code and files, test it out in a simulated repository first. This helps you get familiar with the mechanisms and analyze any errors you or this advice makes.
+
+<details>
+  <summary>## Accidentally committed to wrong branch (local)</summary>
+
+Say you made your commits on `main` or the wrong branch. You can move them to another branch!
+
+::: {.tabset}
+### Commited to `main`
+This is generally easiest to fix, as long those changes aren't pushed to GitHub. Start with your `main` branch active. We need to do two things:
+
+1. Move your commits to another branch
+2. Reset `main` to be the same as your GitHub repository.
+
+#### In git CLI
+
+Create and switch to your new branch.
+
+``` bash
+git switch -c my-new-branch-name
+```
+
+Switch back to `main`
+
+``` bash
+
+```
+
+Reset your `main` branch to your GitHub Repo's state
+
+``` bash
+git reset --hard origin/main
+```
+
+Your new commits are now on a new branch. Now you can switch back to your working branch and `push` to Github if you wish. You can do this in your preferred git client or continue in the CLI if you'd like:
+
+``` bash
+git switch my-new-branch-name
+git push -u origin my-new-branch-name
+```
+
+#### In RStudio
+You can do this once: if your commits are on `main` or any other active branch (i.e. the branch you are viewing a.k.a. "checked out"), create a ![](./images/rstudio-new-branch-btn.png) new branch in the Git pane
+
+### Committed to wrong branch
+
+:::
+
+</details>
